@@ -7,6 +7,9 @@ const input = document.getElementById("taskInput");
 const dateInput = document.getElementById("dateInput");
 const repeatType = document.getElementById("repeatType");
 
+const today = new Date().toISOString().split("T")[0];
+dateInput.min = today;
+
 const addBtn = document.getElementById("addBtn");
 const sweepBtn = document.getElementById("sweepBtn");
 
@@ -149,7 +152,16 @@ function showToast({ message, onUndo, actions = [] }) {
 
 function addTask() {
   const text = input.value.trim();
-  const date = dateInput.value;
+   let date = dateInput.value;
+   
+   const today = new Date().toISOString().split("T")[0];
+   
+   if (date < today) {
+     date = today;
+     showToast({
+       message: "Se me hace que quieres hacerlo hoy..."
+     });
+   }
 
   if (!text || !date) return;
 
