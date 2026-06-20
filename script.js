@@ -9,7 +9,44 @@ const repeatType = document.getElementById("repeatType");
 const addBtn = document.getElementById("addBtn");
 const sweepBtn = document.getElementById("sweepBtn");
 
+const toast = document.getElementById("toast");
+
 let tasks = [];
+
+/* =========================
+   UNDO SYSTEM
+========================= */
+
+let undoStack = null;
+let undoTimer = null;
+
+/* =========================
+   TOAST
+========================= */
+
+function showToast(message, onUndo) {
+  toast.classList.remove("hidden");
+
+  toast.innerHTML = `
+    ${message}
+    <button id="undoBtn">Undo</button>
+  `;
+
+  document.getElementById("undoBtn").onclick = () => {
+    clearTimeout(undoTimer);
+    toast.classList.add("hidden");
+
+    if (undoStack && onUndo) {
+      onUndo();
+      undoStack = null;
+    }
+  };
+
+  undoTimer = setTimeout(() => {
+    toast.classList.add("hidden");
+    undoStack = null;
+  }, 4000);
+}
 
 /* =========================
    ADD TASK
@@ -36,7 +73,7 @@ function addTask() {
 }
 
 /* =========================
-   RENDER (NO FULL DOM BREAKING)
+   RENDER
 ========================= */
 
 function render() {
@@ -48,12 +85,12 @@ function render() {
 }
 
 /* =========================
-   CREATE TASK NODE
+   CREATE TASK CARD
 ========================= */
 
 function createTask(task, index) {
   const card = document.createElement("div");
-  card.className = "task" + (task.done ? " done" : "");
+  card.className = "task";
 
   const left = document.createElement("div");
   left.className = "task-left";
@@ -93,7 +130,7 @@ function createTask(task, index) {
 }
 
 /* =========================
-   INLINE EDIT (NOTION STYLE)
+   INLINE EDIT
 ========================= */
 
 function enableEdit(textEl, task, index) {
@@ -106,11 +143,9 @@ function enableEdit(textEl, task, index) {
 
   const save = () => {
     const value = input.value.trim();
-
     if (value) {
       tasks[index].text = value;
     }
-
     render();
   };
 
@@ -118,30 +153,71 @@ function enableEdit(textEl, task, index) {
 
   input.addEventListener("keydown", (e) => {
     if (e.key === "Enter") save();
-
-    if (e.key === "Escape") {
-      render();
-    }
+    if (e.key === "Escape") render();
   });
 }
 
 /* =========================
-   ACTIONS
+   TOGGLE TASK (DONE + UNDO)
 ========================= */
 
 function toggleTask(index) {
-  tasks[index].done = !tasks[index].done;
-  render();
+  const task = tasks[index];
+
+  if (!task.done) {
+    undoStack = { task, index };
+
+    tasks.splice(index, 1);
+    render();
+
+    showToast("Task completada", () => {
+      tasks.splice(undoStack.index, 0, undoStack.task);
+      render();
+    });
+
+  } else {
+    task.done = false;
+    render();
+  }
 }
+
+/* =========================
+   DELETE (UNDO)
+========================= */
 
 function deleteTask(index) {
+  undoStack = {
+    task: tasks[index],
+    index
+  };
+
   tasks.splice(index, 1);
   render();
+
+  showToast("Task eliminada", () => {
+    tasks.splice(undoStack.index, 0, undoStack.task);
+    render();
+  });
 }
 
+/* =========================
+   SWEEP
+========================= */
+
 function sweepTasks() {
+  const removed = tasks.filter(t => t.done);
+
+  undoStack = {
+    removed
+  };
+
   tasks = tasks.filter(t => !t.done);
   render();
+
+  showToast("Sweep realizado", () => {
+    tasks = [...tasks, ...undoStack.removed];
+    render();
+  });
 }
 
 /* =========================
@@ -155,7 +231,7 @@ input.addEventListener("keydown", (e) => {
   if (e.key === "Enter") addTask();
 });
 
-/* expose (por seguridad con botones futuros) */
+/* expose */
 window.toggleTask = toggleTask;
 window.deleteTask = deleteTask;
 
