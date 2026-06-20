@@ -16,6 +16,18 @@ const sweepBtn = document.getElementById("sweepBtn");
 let tasks = [];
 let undoStack = null;
 
+function saveTasks() {
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
+function loadTasks() {
+  const saved = localStorage.getItem("tasks");
+
+  if (saved) {
+    tasks = JSON.parse(saved);
+  }
+}
+
 /* =========================
    TOAST STATE (PRO FIX)
 ========================= */
@@ -176,6 +188,8 @@ function addTask() {
     done: false
   });
 
+  saveTasks();
+
   input.value = "";
   dateInput.value = "";
   repeatType.value = "none";
@@ -247,6 +261,7 @@ function editTask(el, index) {
 
   const save = () => {
     tasks[index].text = input.value.trim() || tasks[index].text;
+    saveTasks();
     render();
   };
 
@@ -273,6 +288,7 @@ function toggleTask(index) {
   };
 
   tasks.splice(index, 1);
+  saveTasks();
   render();
 
   const hasRepeat =
@@ -286,6 +302,7 @@ const next = hasRepeat ? getNextDate(task) : null;
     message: "Task completada",
     onUndo: () => {
       tasks.splice(undoStack.index, 0, undoStack.task);
+      saveTasks();
       render();
     },
     actions: next
@@ -301,6 +318,7 @@ const next = hasRepeat ? getNextDate(task) : null;
             done: false
           });
 
+          saveTasks();
           render();
         }
       },
@@ -329,6 +347,7 @@ function deleteTask(index) {
     message: "Task eliminada",
     onUndo: () => {
       tasks.splice(undoStack.index, 0, undoStack.task);
+      saveTasks();
       render();
     }
   });
@@ -352,6 +371,7 @@ function sweepTasks() {
     message: "Sweep realizado",
     onUndo: () => {
       tasks = [...tasks, ...undoStack.removed];
+      saveTasks();
       render();
     }
   });
@@ -364,6 +384,7 @@ function sweepTasks() {
 addBtn.onclick = addTask;
 sweepBtn.onclick = sweepTasks;
 
+loadTasks();
 render();
 
 });
