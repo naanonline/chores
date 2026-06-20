@@ -203,9 +203,9 @@ button {
 }
 
 .toast-pill:hover {
-  background: rgba(96, 165, 250, 0.15);
-  border-color: rgba(96, 165, 250, 0.4);
-  transform: translateY(-1px);
+  background: rgba(96, 165, 250, 0.2);
+  border-color: rgba(96, 165, 250, 0.5);
+  transform: translateY(-1px) scale(1.03);
 }
 
 /* ACTIONS */
