@@ -216,17 +216,25 @@ function toggleTask(index) {
   const task = tasks[index];
 
   if (!task.done) {
-    undoStack = { task, index };
+
+    const original = { ...task };
+
+    undoStack = {
+      type: "complete",
+      task: original,
+      index
+    };
 
     tasks.splice(index, 1);
-    render();
 
     showToast("Task completada", () => {
       tasks.splice(undoStack.index, 0, undoStack.task);
       render();
     });
 
-    // 🔥 SMART RESCHEDULE
+    render();
+
+    // 🔥 smart schedule (solo si NO hay undo restore activo)
     if (task.repeat !== "none") {
       const next = getNextDate(task);
 
@@ -247,15 +255,22 @@ function toggleTask(index) {
 ========================= */
 
 function deleteTask(index) {
-  undoStack = { task: tasks[index], index };
+  const task = tasks[index];
+
+  undoStack = {
+    type: "delete",
+    task: { ...task },
+    index
+  };
 
   tasks.splice(index, 1);
-  render();
 
   showToast("Task eliminada", () => {
     tasks.splice(undoStack.index, 0, undoStack.task);
     render();
   });
+
+  render();
 }
 
 /* =========================
