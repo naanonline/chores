@@ -1,192 +1,70 @@
-/* =========================
-   BASE (Spool Finder core)
-========================= */
 body {
-  font-family: "Open Sans", system-ui, sans-serif;
-  background: #f2f3f5;
   margin: 0;
+  font-family: system-ui, sans-serif;
+  background: #f4f6f8;
   color: #1f2933;
 }
 
-/* =========================
-   HEADER (Task Sweeper style)
-========================= */
+.app {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
 .header {
   text-align: center;
-  padding: 72px 24px 32px;
+  margin-bottom: 20px;
 }
 
-.header h1 {
-  font-family: "Climate Crisis", system-ui, sans-serif;
-  font-size: clamp(44px, 6vw, 84px);
-  letter-spacing: 0.03em;
-  margin: 0;
-}
-
-.filters {
-  margin-top: 24px;
-}
-
-.filters button {
-  background: #ffffff;
-  border: 1px solid rgba(0,0,0,0.08);
-  border-radius: 999px;
-  padding: 8px 14px;
-  margin: 4px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: 0.2s;
-}
-
-.filters button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 18px rgba(0,0,0,0.08);
-}
-
-/* =========================
-   DASHBOARD (Spool cards vibe)
-========================= */
-.dashboard {
+/* INPUT */
+.input-area {
   display: flex;
-  justify-content: center;
-  gap: 16px;
-  padding: 20px;
-  flex-wrap: wrap;
-}
-
-.stat {
-  background: #f8f9fa;
-  border-radius: 18px;
-  padding: 18px 22px;
-  min-width: 140px;
-  text-align: center;
-  box-shadow:
-    0 1px 2px rgba(0,0,0,0.04),
-    0 10px 24px rgba(0,0,0,0.06);
-  font-weight: 700;
-}
-
-.stat.red { border-left: 4px solid #ff4d4d; }
-.stat.yellow { border-left: 4px solid #ffd24d; }
-.stat.green { border-left: 4px solid #4dff88; }
-
-/* =========================
-   CREATE CARD (Spool filter style)
-========================= */
-.create-card {
-  max-width: 720px;
-  margin: 24px auto;
-  background: #f8f9fa;
-  padding: 18px;
-  border-radius: 24px;
-  box-shadow:
-    0 1px 2px rgba(0,0,0,0.04),
-    0 10px 24px rgba(0,0,0,0.06);
-  display: grid;
   gap: 10px;
+  margin-bottom: 20px;
 }
 
-.create-card input,
-.create-card select {
-  border: 1px solid rgba(0,0,0,0.08);
-  border-radius: 999px;
-  padding: 14px 18px;
-  background: #fff;
-  font-size: 14px;
-}
-
-.create-card button {
-  border: none;
-  border-radius: 999px;
-  padding: 14px;
-  background: #1f2933;
-  color: white;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-/* =========================
-   GRID (Spool Finder cards)
-========================= */
-.grid {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 24px;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 20px;
-}
-
-/* =========================
-   TASK CARD (Spool color-card vibe)
-========================= */
-.task {
-  background: #f8f9fa;
-  border-radius: 18px;
-  padding: 18px;
-  box-shadow:
-    0 1px 2px rgba(0,0,0,0.04),
-    0 10px 24px rgba(0,0,0,0.06);
-  transition: transform 0.2s ease;
-}
-
-.task:hover {
-  transform: translateY(-4px);
-}
-
-.task b {
-  font-size: 16px;
-}
-
-.task small {
-  display: block;
-  opacity: 0.7;
-  margin-top: 6px;
-}
-
-/* STATUS BORDER */
-.task.red { border-left: 4px solid #ff4d4d; }
-.task.yellow { border-left: 4px solid #ffd24d; }
-.task.green { border-left: 4px solid #4dff88; }
-
-/* BUTTON */
-.task button {
-  margin-top: 12px;
-  width: 100%;
-  border: none;
-  border-radius: 999px;
+input {
+  flex: 1;
   padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+button {
+  padding: 10px 14px;
+  border: none;
+  border-radius: 8px;
   cursor: pointer;
-  background: #1f2933;
+  background: #2563eb;
   color: white;
-  font-weight: 700;
 }
 
-/* =========================
-   CALENDAR (clean grid like Spool layout)
-========================= */
-.calendar-wrapper {
-  max-width: 1100px;
-  margin: 40px auto;
-  padding: 0 24px 80px;
+button:hover {
+  opacity: 0.9;
 }
 
-.calendar-wrapper h2 {
-  font-family: "Climate Crisis", system-ui;
-}
-
-.calendar {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
+/* TASKS */
+.task-list {
+  display: flex;
+  flex-direction: column;
   gap: 10px;
 }
 
-.day {
-  background: #f8f9fa;
-  border-radius: 12px;
-  min-height: 70px;
-  padding: 8px;
-  font-size: 12px;
-  box-shadow:
-    0 1px 2px rgba(0,0,0,0.04);
+.task {
+  background: white;
+  padding: 12px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+}
+
+.task.done {
+  opacity: 0.5;
+  text-decoration: line-through;
+}
+
+.task button {
+  background: #ef4444;
 }
