@@ -38,9 +38,25 @@ button {
   padding: 10px 14px;
   border-radius: 10px;
   border: none;
+  cursor: pointer;
+}
+
+/* 🔥 BOTÓN PRINCIPAL */
+#addBtn {
   background: #111827;
   color: white;
-  cursor: pointer;
+}
+
+/* 🔥 BOTÓN SECUNDARIO */
+#sweepBtn {
+  background: #f8fafc;
+  color: #1f2933;
+  border: 1px solid #d0d5dd;
+}
+
+/* hover suave */
+#sweepBtn:hover {
+  background: #eef2f7;
 }
 
 /* GRID */
