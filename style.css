@@ -1,46 +1,123 @@
 body {
-  font-family: Arial;
-  background: #111;
-  color: #eee;
   margin: 0;
+  font-family: Arial;
+  background: #0f0f0f;
+  color: #eee;
+}
+
+/* HEADER */
+.header {
+  text-align: center;
   padding: 20px;
+  background: #151515;
 }
 
-h1 {
-  margin-bottom: 15px;
+.header h1 {
+  margin: 0;
 }
 
-.card {
-  background: #1c1c1c;
-  padding: 15px;
-  margin: 10px 0;
-  border-radius: 10px;
+/* FILTERS */
+.filters {
+  margin-top: 10px;
+}
+
+.filters button {
+  margin: 4px;
+  padding: 6px 10px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  background: #222;
+  color: #eee;
+}
+
+/* DASHBOARD */
+.dashboard {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px;
+}
+
+.stat {
+  padding: 10px 15px;
+  border-radius: 12px;
+  min-width: 120px;
+  text-align: center;
+}
+
+.red { background: #4a1f1f; }
+.yellow { background: #4a441f; }
+.green { background: #1f4a2a; }
+
+/* CREATE CARD */
+.create-card {
+  max-width: 600px;
+  margin: 10px auto;
+  background: #1b1b1b;
+  padding: 12px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 input, select, button {
-  padding: 8px;
-  margin: 5px 0;
-  border-radius: 6px;
+  padding: 10px;
+  border-radius: 8px;
   border: none;
-  width: 100%;
+  background: #222;
+  color: #eee;
 }
 
 button {
-  background: #4caf50;
-  color: white;
   cursor: pointer;
+  background: #4caf50;
 }
 
-button.delete {
-  background: #e74c3c;
-}
-
-.row {
-  display: flex;
+/* GRID TASKS */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 10px;
+  padding: 15px;
+  max-width: 1100px;
+  margin: auto;
 }
 
-.small {
-  font-size: 12px;
+/* TASK CARD */
+.task {
+  background: #1c1c1c;
+  padding: 12px;
+  border-radius: 12px;
+  border-left: 4px solid transparent;
+}
+
+.task.red { border-color: #ff4d4d; }
+.task.yellow { border-color: #ffd24d; }
+.task.green { border-color: #4dff88; }
+
+.task small {
   opacity: 0.7;
+}
+
+/* CALENDAR */
+.calendar-wrapper {
+  max-width: 900px;
+  margin: auto;
+  padding: 20px;
+}
+
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+
+.day {
+  background: #1c1c1c;
+  min-height: 60px;
+  border-radius: 8px;
+  padding: 5px;
+  font-size: 11px;
 }
