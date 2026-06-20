@@ -6,114 +6,66 @@ body {
 }
 
 .page {
-  max-width: 950px;
+  max-width: 900px;
   margin: 0 auto;
   padding: 60px 20px;
 }
 
-/* HEADER */
 .header {
   text-align: center;
-  margin-bottom: 20px;
 }
 
 .sub {
   color: #6b7280;
-  margin-top: 4px;
 }
 
-/* INPUT BAR */
+/* INPUT */
 .input-bar {
   display: flex;
   gap: 10px;
   justify-content: center;
   flex-wrap: wrap;
-  margin-bottom: 25px;
+  margin: 20px 0;
 }
 
 input, select {
-  padding: 10px 12px;
+  padding: 10px;
   border-radius: 10px;
   border: 1px solid #d0d5dd;
-  background: white;
-}
-
-#taskInput {
-  min-width: 200px;
 }
 
 button {
   padding: 10px 14px;
   border-radius: 10px;
-  border: 1px solid #d0d5dd;
-  background: white;
-  cursor: pointer;
-}
-
-button#addBtn {
+  border: none;
   background: #111827;
   color: white;
-  border: none;
-}
-
-button.secondary {
-  background: #f8fafc;
+  cursor: pointer;
 }
 
 /* GRID */
 .grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 14px;
+  gap: 12px;
 }
 
 /* CARD */
 .task {
   background: white;
   border-radius: 12px;
-  padding: 14px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  padding: 12px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
 
 .task.done {
   opacity: 0.5;
-  text-decoration: line-through;
-}
-
-.meta {
-  font-size: 12px;
-  color: #6b7280;
-  margin-top: 4px;
-}
-
-.task-left {
-  display: flex;
-  flex-direction: column;
 }
 
 .task-text {
-  cursor: text;
-}
-
-.task-edit {
-  width: 100%;
-  padding: 6px 8px;
-  border-radius: 8px;
-  border: 1px solid #d0d5dd;
-  font-size: 14px;
-  outline: none;
-  background: #fff;
-}
-
-.task {
-  transition: 0.15s ease;
-}
-
-.task:hover {
-  transform: translateY(-1px);
+  cursor: pointer;
 }
 
 /* TOAST */
@@ -126,26 +78,16 @@ button.secondary {
   color: white;
   padding: 10px 14px;
   border-radius: 10px;
-  font-size: 14px;
   display: flex;
   gap: 10px;
   align-items: center;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  overflow: hidden;
 }
 
 .toast.hidden {
   display: none;
 }
 
-.toast button {
-  background: transparent;
-  border: none;
-  color: #60a5fa;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-/* 🔥 BAR CONTAINER */
 .toast-bar {
   position: absolute;
   bottom: 0;
@@ -155,31 +97,8 @@ button.secondary {
   background: rgba(255,255,255,0.15);
 }
 
-/* 🔥 BAR FILL */
 .toast-bar-fill {
   height: 100%;
   width: 100%;
   background: #60a5fa;
-  transition: width linear;
-}
-
-/* ACTIONS */
-.actions {
-  display: flex;
-  gap: 6px;
-}
-
-.actions button {
-  padding: 6px 10px;
-  font-size: 12px;
-}
-
-.actions button:first-child {
-  background: #e0f2fe;
-  border: none;
-}
-
-.actions button:last-child {
-  background: #fee2e2;
-  border: none;
 }
