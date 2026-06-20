@@ -260,7 +260,12 @@ function toggleTask(index) {
   tasks.splice(index, 1);
   render();
 
-  const next = task.repeat !== "none" ? getNextDate(task) : null;
+  const hasRepeat =
+  task.repeat === "14days" ||
+  task.repeat === "weekly" ||
+  task.repeat === "monthly";
+
+const next = hasRepeat ? getNextDate(task) : null;
 
   showToast({
     message: "Task completada",
@@ -268,7 +273,8 @@ function toggleTask(index) {
       tasks.splice(undoStack.index, 0, undoStack.task);
       render();
     },
-    actions: next ? [
+    actions: next
+     ? [
       {
         label: `Agregar ${next.toISOString().split("T")[0]}`,
         onClick: () => {
@@ -279,6 +285,7 @@ function toggleTask(index) {
             repeat: task.repeat,
             done: false
           });
+
           render();
         }
       },
@@ -286,7 +293,8 @@ function toggleTask(index) {
         label: "Ignorar",
         onClick: () => {}
       }
-    ] : []
+    ]
+  : []
   });
 }
 
