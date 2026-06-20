@@ -12,7 +12,15 @@ const sweepBtn = document.getElementById("sweepBtn");
 
 let tasks = [];
 let undoStack = null;
-let undoTimer = null;
+
+/* =========================
+   TOAST STATE (PRO FIX)
+========================= */
+
+let toastTimer = null;
+let toastStart = null;
+let toastRAF = null;
+const toastDuration = 4000;
 
 /* =========================
    UTIL
@@ -64,15 +72,25 @@ function getNextDate(task) {
 }
 
 /* =========================
-   TOAST
+   TOAST PRO (1 SOLO SISTEMA)
 ========================= */
 
-function showToast(message, onUndo) {
+function showToast({ message, onUndo, actions = [] }) {
+
+  clearTimeout(toastTimer);
+  cancelAnimationFrame(toastRAF);
+
   toast.classList.remove("hidden");
 
   toast.innerHTML = `
     <span>${message}</span>
-    <button id="undoBtn">Undo</button>
+
+    <div class="toast-actions">
+      ${onUndo ? `<button id="undoBtn">Undo</button>` : ""}
+      ${actions.map((a, i) =>
+        `<button data-action="${i}">${a.label}</button>`
+      ).join("")}
+    </div>
 
     <div class="toast-bar">
       <div class="toast-bar-fill"></div>
@@ -80,33 +98,49 @@ function showToast(message, onUndo) {
   `;
 
   const bar = toast.querySelector(".toast-bar-fill");
-
-  let duration = 4000;
-  let start = Date.now();
+  toastStart = Date.now();
 
   function animate() {
-    let progress = Math.max(0, 1 - (Date.now() - start) / duration);
+    const elapsed = Date.now() - toastStart;
+    const progress = Math.max(0, 1 - elapsed / toastDuration);
+
     bar.style.width = (progress * 100) + "%";
 
-    if (progress > 0) requestAnimationFrame(animate);
+    if (progress > 0) {
+      toastRAF = requestAnimationFrame(animate);
+    }
   }
 
-  requestAnimationFrame(animate);
+  toastRAF = requestAnimationFrame(animate);
 
-  document.getElementById("undoBtn").onclick = () => {
-    clearTimeout(undoTimer);
-    toast.classList.add("hidden");
+  /* UNDO */
+  if (onUndo) {
+    document.getElementById("undoBtn").onclick = () => {
+      clearTimeout(toastTimer);
+      cancelAnimationFrame(toastRAF);
+      toast.classList.add("hidden");
 
-    if (undoStack && onUndo) {
       onUndo();
       undoStack = null;
-    }
-  };
+    };
+  }
 
-  undoTimer = setTimeout(() => {
+  /* ACTIONS */
+  actions.forEach((a, i) => {
+    const btn = toast.querySelector(`[data-action="${i}"]`);
+    btn.onclick = () => {
+      a.onClick();
+      toast.classList.add("hidden");
+      cancelAnimationFrame(toastRAF);
+      clearTimeout(toastTimer);
+    };
+  });
+
+  toastTimer = setTimeout(() => {
     toast.classList.add("hidden");
+    cancelAnimationFrame(toastRAF);
     undoStack = null;
-  }, duration);
+  }, toastDuration);
 }
 
 /* =========================
@@ -210,7 +244,7 @@ function editTask(el, index) {
 }
 
 /* =========================
-   TOGGLE (SMART SUGGESTION)
+   COMPLETE + SMART ACTION TOAST
 ========================= */
 
 function toggleTask(index) {
@@ -226,46 +260,34 @@ function toggleTask(index) {
   tasks.splice(index, 1);
   render();
 
-  /* =========================
-     1. TOAST PRINCIPAL
-  ========================= */
-
-  showToast("Task completada", () => {
-    tasks.splice(undoStack.index, 0, undoStack.task);
-    render();
-  });
-
-  /* =========================
-     2. SUGERENCIA (DELAY MÁS GRANDE Y SEPARADA)
-  ========================= */
-
   const next = task.repeat !== "none" ? getNextDate(task) : null;
 
-  if (next) {
-    setTimeout(() => {
-
-      // 🔥 evita conflicto con toast anterior
-      toast.classList.add("hidden");
-
-      setTimeout(() => {
-        showToast(
-          `Siguiente sugerida: ${next.toISOString().split("T")[0]}`,
-          () => {
-            tasks.push({
-              id: crypto.randomUUID(),
-              text: task.text,
-              date: next.toISOString().split("T")[0],
-              repeat: task.repeat,
-              done: false
-            });
-
-            render();
-          }
-        );
-      }, 200);
-
-    }, 1200); // 🔥 IMPORTANTE: más tarde
-  }
+  showToast({
+    message: "Task completada",
+    onUndo: () => {
+      tasks.splice(undoStack.index, 0, undoStack.task);
+      render();
+    },
+    actions: next ? [
+      {
+        label: `Agregar ${next.toISOString().split("T")[0]}`,
+        onClick: () => {
+          tasks.push({
+            id: crypto.randomUUID(),
+            text: task.text,
+            date: next.toISOString().split("T")[0],
+            repeat: task.repeat,
+            done: false
+          });
+          render();
+        }
+      },
+      {
+        label: "Ignorar",
+        onClick: () => {}
+      }
+    ] : []
+  });
 }
 
 /* =========================
@@ -280,9 +302,12 @@ function deleteTask(index) {
 
   tasks.splice(index, 1);
 
-  showToast("Task eliminada", () => {
-    tasks.splice(undoStack.index, 0, undoStack.task);
-    render();
+  showToast({
+    message: "Task eliminada",
+    onUndo: () => {
+      tasks.splice(undoStack.index, 0, undoStack.task);
+      render();
+    }
   });
 
   render();
@@ -300,9 +325,12 @@ function sweepTasks() {
   tasks = tasks.filter(t => !t.done);
   render();
 
-  showToast("Sweep realizado", () => {
-    tasks = [...tasks, ...undoStack.removed];
-    render();
+  showToast({
+    message: "Sweep realizado",
+    onUndo: () => {
+      tasks = [...tasks, ...undoStack.removed];
+      render();
+    }
   });
 }
 
