@@ -15,7 +15,7 @@ let undoStack = null;
 let undoTimer = null;
 
 /* =========================
-   SMART DATE ENGINE
+   UTIL
 ========================= */
 
 function addDays(date, days) {
@@ -24,27 +24,27 @@ function addDays(date, days) {
   return d;
 }
 
-/* 🔥 regla smart: evita lunes/viernes pesados */
+/* smart adjustment simple */
 function smartAdjust(date) {
   const d = new Date(date);
-  const day = d.getDay(); // 0 dom - 6 sáb
+  const day = d.getDay();
 
-  // mover viernes → sábado
+  // evita viernes → sábado
   if (day === 5) d.setDate(d.getDate() + 1);
 
-  // mover lunes → martes
+  // evita lunes → martes
   if (day === 1) d.setDate(d.getDate() + 1);
 
   return d;
 }
 
 /* =========================
-   NEXT DATE LOGIC
+   NEXT DATE
 ========================= */
 
 function getNextDate(task) {
   let base = new Date(task.date);
-  let next;
+  let next = null;
 
   switch (task.repeat) {
     case "14days":
@@ -77,6 +77,7 @@ function showToast(message, onUndo) {
   toast.innerHTML = `
     <span>${message}</span>
     <button id="undoBtn">Undo</button>
+
     <div class="toast-bar">
       <div class="toast-bar-fill"></div>
     </div>
@@ -123,6 +124,7 @@ function addTask() {
   if (!text || !date) return;
 
   tasks.push({
+    id: crypto.randomUUID(),
     text,
     date,
     repeat: repeatType.value,
@@ -145,9 +147,10 @@ function render() {
 
   tasks.forEach((task, index) => {
     const card = document.createElement("div");
-    card.className = "task" + (task.done ? " done" : "");
+    card.className = "task";
 
     const left = document.createElement("div");
+    left.className = "task-left";
 
     const text = document.createElement("strong");
     text.className = "task-text";
@@ -162,15 +165,16 @@ function render() {
     left.appendChild(meta);
 
     const actions = document.createElement("div");
+    actions.className = "actions";
 
     const done = document.createElement("button");
-    done.textContent = "✔";
     done.className = "btn-done";
+    done.textContent = "✔";
     done.onclick = () => toggleTask(index);
 
     const del = document.createElement("button");
-    del.textContent = "✕";
     del.className = "btn-delete";
+    del.textContent = "✕";
     del.onclick = () => deleteTask(index);
 
     actions.appendChild(done);
@@ -202,6 +206,7 @@ function editTask(el, index) {
   };
 
   input.addEventListener("blur", save);
+
   input.addEventListener("keydown", e => {
     if (e.key === "Enter") save();
     if (e.key === "Escape") render();
@@ -209,7 +214,7 @@ function editTask(el, index) {
 }
 
 /* =========================
-   TOGGLE (SMART RESCHEDULE)
+   TOGGLE (SMART + UNDO FIX)
 ========================= */
 
 function toggleTask(index) {
@@ -220,7 +225,6 @@ function toggleTask(index) {
     const original = { ...task };
 
     undoStack = {
-      type: "complete",
       task: original,
       index
     };
@@ -228,18 +232,27 @@ function toggleTask(index) {
     tasks.splice(index, 1);
 
     showToast("Task completada", () => {
+
+      // 🔥 elimina versión generada por smart schedule
+      tasks = tasks.filter(t =>
+        !(t.text === undoStack.task.text &&
+          t.repeat === undoStack.task.repeat &&
+          t.date !== undoStack.task.date)
+      );
+
       tasks.splice(undoStack.index, 0, undoStack.task);
       render();
     });
 
     render();
 
-    // 🔥 smart schedule (solo si NO hay undo restore activo)
+    /* SMART SCHEDULE */
     if (task.repeat !== "none") {
       const next = getNextDate(task);
 
       if (next) {
         tasks.push({
+          id: crypto.randomUUID(),
           text: task.text,
           date: next.toISOString().split("T")[0],
           repeat: task.repeat,
@@ -255,11 +268,8 @@ function toggleTask(index) {
 ========================= */
 
 function deleteTask(index) {
-  const task = tasks[index];
-
   undoStack = {
-    type: "delete",
-    task: { ...task },
+    task: { ...tasks[index] },
     index
   };
 
