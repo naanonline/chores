@@ -24,15 +24,11 @@ function addDays(date, days) {
   return d;
 }
 
-/* smart adjustment simple */
 function smartAdjust(date) {
   const d = new Date(date);
   const day = d.getDay();
 
-  // evita viernes → sábado
   if (day === 5) d.setDate(d.getDate() + 1);
-
-  // evita lunes → martes
   if (day === 1) d.setDate(d.getDate() + 1);
 
   return d;
@@ -214,52 +210,51 @@ function editTask(el, index) {
 }
 
 /* =========================
-   TOGGLE (SMART + UNDO FIX)
+   TOGGLE (SMART SUGGESTION)
 ========================= */
 
 function toggleTask(index) {
   const task = tasks[index];
 
-  if (!task.done) {
+  const original = { ...task };
 
-    const original = { ...task };
+  undoStack = {
+    task: original,
+    index
+  };
 
-    undoStack = {
-      task: original,
-      index
-    };
+  tasks.splice(index, 1);
 
-    tasks.splice(index, 1);
+  render();
 
-    showToast("Task completada", () => {
-
-      // 🔥 elimina versión generada por smart schedule
-      tasks = tasks.filter(t =>
-        !(t.text === undoStack.task.text &&
-          t.repeat === undoStack.task.repeat &&
-          t.date !== undoStack.task.date)
-      );
-
-      tasks.splice(undoStack.index, 0, undoStack.task);
-      render();
-    });
-
+  showToast("Task completada", () => {
+    tasks.splice(undoStack.index, 0, undoStack.task);
     render();
+  });
 
-    /* SMART SCHEDULE */
-    if (task.repeat !== "none") {
-      const next = getNextDate(task);
+  /* =========================
+     SMART SUGGESTION (NO AUTO CREATE)
+  ========================= */
 
-      if (next) {
-        tasks.push({
-          id: crypto.randomUUID(),
-          text: task.text,
-          date: next.toISOString().split("T")[0],
-          repeat: task.repeat,
-          done: false
-        });
-      }
-    }
+  const next = task.repeat !== "none" ? getNextDate(task) : null;
+
+  if (next) {
+    setTimeout(() => {
+      showToast(
+        `¿Agregar siguiente? ${next.toISOString().split("T")[0]}`,
+        () => {
+          tasks.push({
+            id: crypto.randomUUID(),
+            text: task.text,
+            date: next.toISOString().split("T")[0],
+            repeat: task.repeat,
+            done: false
+          });
+
+          render();
+        }
+      );
+    }, 600);
   }
 }
 
