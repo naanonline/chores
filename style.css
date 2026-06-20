@@ -1,123 +1,192 @@
+/* =========================
+   BASE (Spool Finder core)
+========================= */
 body {
+  font-family: "Open Sans", system-ui, sans-serif;
+  background: #f2f3f5;
   margin: 0;
-  font-family: Arial;
-  background: #0f0f0f;
-  color: #eee;
+  color: #1f2933;
 }
 
-/* HEADER */
+/* =========================
+   HEADER (Task Sweeper style)
+========================= */
 .header {
   text-align: center;
-  padding: 20px;
-  background: #151515;
+  padding: 72px 24px 32px;
 }
 
 .header h1 {
+  font-family: "Climate Crisis", system-ui, sans-serif;
+  font-size: clamp(44px, 6vw, 84px);
+  letter-spacing: 0.03em;
   margin: 0;
 }
 
-/* FILTERS */
 .filters {
-  margin-top: 10px;
+  margin-top: 24px;
 }
 
 .filters button {
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 999px;
+  padding: 8px 14px;
   margin: 4px;
-  padding: 6px 10px;
-  border-radius: 20px;
-  border: none;
   cursor: pointer;
-  background: #222;
-  color: #eee;
+  font-weight: 600;
+  transition: 0.2s;
 }
 
-/* DASHBOARD */
+.filters button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+}
+
+/* =========================
+   DASHBOARD (Spool cards vibe)
+========================= */
 .dashboard {
   display: flex;
   justify-content: center;
-  gap: 10px;
-  padding: 10px;
+  gap: 16px;
+  padding: 20px;
+  flex-wrap: wrap;
 }
 
 .stat {
-  padding: 10px 15px;
-  border-radius: 12px;
-  min-width: 120px;
+  background: #f8f9fa;
+  border-radius: 18px;
+  padding: 18px 22px;
+  min-width: 140px;
   text-align: center;
+  box-shadow:
+    0 1px 2px rgba(0,0,0,0.04),
+    0 10px 24px rgba(0,0,0,0.06);
+  font-weight: 700;
 }
 
-.red { background: #4a1f1f; }
-.yellow { background: #4a441f; }
-.green { background: #1f4a2a; }
+.stat.red { border-left: 4px solid #ff4d4d; }
+.stat.yellow { border-left: 4px solid #ffd24d; }
+.stat.green { border-left: 4px solid #4dff88; }
 
-/* CREATE CARD */
+/* =========================
+   CREATE CARD (Spool filter style)
+========================= */
 .create-card {
-  max-width: 600px;
-  margin: 10px auto;
-  background: #1b1b1b;
-  padding: 12px;
-  border-radius: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-input, select, button {
-  padding: 10px;
-  border-radius: 8px;
-  border: none;
-  background: #222;
-  color: #eee;
-}
-
-button {
-  cursor: pointer;
-  background: #4caf50;
-}
-
-/* GRID TASKS */
-.grid {
+  max-width: 720px;
+  margin: 24px auto;
+  background: #f8f9fa;
+  padding: 18px;
+  border-radius: 24px;
+  box-shadow:
+    0 1px 2px rgba(0,0,0,0.04),
+    0 10px 24px rgba(0,0,0,0.06);
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 10px;
-  padding: 15px;
-  max-width: 1100px;
-  margin: auto;
 }
 
-/* TASK CARD */
+.create-card input,
+.create-card select {
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 999px;
+  padding: 14px 18px;
+  background: #fff;
+  font-size: 14px;
+}
+
+.create-card button {
+  border: none;
+  border-radius: 999px;
+  padding: 14px;
+  background: #1f2933;
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* =========================
+   GRID (Spool Finder cards)
+========================= */
+.grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+/* =========================
+   TASK CARD (Spool color-card vibe)
+========================= */
 .task {
-  background: #1c1c1c;
-  padding: 12px;
-  border-radius: 12px;
-  border-left: 4px solid transparent;
+  background: #f8f9fa;
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow:
+    0 1px 2px rgba(0,0,0,0.04),
+    0 10px 24px rgba(0,0,0,0.06);
+  transition: transform 0.2s ease;
 }
 
-.task.red { border-color: #ff4d4d; }
-.task.yellow { border-color: #ffd24d; }
-.task.green { border-color: #4dff88; }
+.task:hover {
+  transform: translateY(-4px);
+}
+
+.task b {
+  font-size: 16px;
+}
 
 .task small {
+  display: block;
   opacity: 0.7;
+  margin-top: 6px;
 }
 
-/* CALENDAR */
+/* STATUS BORDER */
+.task.red { border-left: 4px solid #ff4d4d; }
+.task.yellow { border-left: 4px solid #ffd24d; }
+.task.green { border-left: 4px solid #4dff88; }
+
+/* BUTTON */
+.task button {
+  margin-top: 12px;
+  width: 100%;
+  border: none;
+  border-radius: 999px;
+  padding: 10px;
+  cursor: pointer;
+  background: #1f2933;
+  color: white;
+  font-weight: 700;
+}
+
+/* =========================
+   CALENDAR (clean grid like Spool layout)
+========================= */
 .calendar-wrapper {
-  max-width: 900px;
-  margin: auto;
-  padding: 20px;
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 0 24px 80px;
+}
+
+.calendar-wrapper h2 {
+  font-family: "Climate Crisis", system-ui;
 }
 
 .calendar {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 6px;
+  gap: 10px;
 }
 
 .day {
-  background: #1c1c1c;
-  min-height: 60px;
-  border-radius: 8px;
-  padding: 5px;
-  font-size: 11px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  min-height: 70px;
+  padding: 8px;
+  font-size: 12px;
+  box-shadow:
+    0 1px 2px rgba(0,0,0,0.04);
 }
