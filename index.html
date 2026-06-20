@@ -1,55 +1,31 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Task Sweeper</title>
   <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
 
-<header class="header">
-  <h1>🧹 Task Sweeper</h1>
+<div class="app">
 
-  <div class="filters">
-    <button onclick="setFilter('all')">Todas</button>
-    <button onclick="setFilter('home')">Casa</button>
-    <button onclick="setFilter('pets')">Perros</button>
-    <button onclick="setFilter('finance')">Finanzas</button>
-  </div>
-</header>
+  <header class="header">
+    <h1>Task Sweeper 🧹</h1>
+  </header>
 
-<section class="dashboard">
-  <div class="stat red" id="overdue">0 Vencidas</div>
-  <div class="stat yellow" id="today">0 Hoy</div>
-  <div class="stat green" id="upcoming">0 Próximas</div>
-</section>
+  <section class="input-area">
+    <input id="taskInput" type="text" placeholder="Escribe una tarea..." />
+    <button id="addBtn">Agregar</button>
+    <button id="sweepBtn">Sweep</button>
+  </section>
 
-<section class="create-card">
-  <input id="name" placeholder="Nueva tarea (ej. Lavar ropa)">
-  
-  <select id="category">
-    <option value="home">Casa</option>
-    <option value="pets">Perros</option>
-    <option value="finance">Finanzas</option>
-  </select>
+  <section id="taskList" class="task-list"></section>
 
-  <select id="type">
-    <option value="days">Cada X días</option>
-    <option value="month">Día del mes</option>
-  </select>
+</div>
 
-  <input id="value" placeholder="Ej. 14 o 15">
+<script src="app.js" defer></script>
 
-  <button onclick="addTask()">Agregar</button>
-</section>
-
-<main id="list" class="grid"></main>
-
-<section class="calendar-wrapper">
-  <h2>📅 Calendario</h2>
-  <div id="calendar" class="calendar"></div>
-</section>
-
-<script src="app.js"></script>
 </body>
 </html>
