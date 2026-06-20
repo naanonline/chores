@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Home Tasks</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<h1>🏠 Home Tasks</h1>
+
+<div class="card">
+  <h3>Nueva tarea</h3>
+
+  <input id="name" placeholder="Ej. Lavar ropa" />
+
+  <select id="type">
+    <option value="days">Cada X días</option>
+    <option value="monthDay">Día del mes</option>
+    <option value="weekday">Día de la semana</option>
+  </select>
+
+  <input id="value" placeholder="Ej. 14 / 15 / 6 (sábado)" />
+
+  <label>
+    <input type="checkbox" id="weekendFix" />
+    Mover a fin de semana si cae entre semana
+  </label>
+
+  <button onclick="addTask()">Agregar</button>
+</div>
+
+<div id="list"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
