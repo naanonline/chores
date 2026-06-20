@@ -128,7 +128,7 @@ button {
 
 .toast span {
   flex: 1;
-  padding-right: 6px; /* 🔥 aire interno */
+  padding-right: 12px; /* 🔥 aire interno */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
