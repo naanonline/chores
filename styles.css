@@ -6,32 +6,40 @@ body {
 }
 
 .page {
-  max-width: 900px;
+  max-width: 950px;
   margin: 0 auto;
-  padding: 300px 200px;
+  padding: 60px 20px;
 }
 
 /* HEADER */
 .header {
   text-align: center;
-  margin-bottom: 25px;
+  margin-bottom: 20px;
 }
 
-/* INPUT BAR (estilo filtros spool) */
+.sub {
+  color: #6b7280;
+  margin-top: 4px;
+}
+
+/* INPUT BAR */
 .input-bar {
   display: flex;
   gap: 10px;
   justify-content: center;
-  margin-bottom: 25px;
   flex-wrap: wrap;
+  margin-bottom: 25px;
 }
 
-input {
-  min-width: 260px;
+input, select {
   padding: 10px 12px;
   border-radius: 10px;
   border: 1px solid #d0d5dd;
-  outline: none;
+  background: white;
+}
+
+#taskInput {
+  min-width: 200px;
 }
 
 button {
@@ -40,15 +48,10 @@ button {
   border: 1px solid #d0d5dd;
   background: white;
   cursor: pointer;
-  transition: 0.15s ease;
-}
-
-button:hover {
-  transform: translateY(-1px);
 }
 
 button#addBtn {
-  background: #1f2933;
+  background: #111827;
   color: white;
   border: none;
 }
@@ -57,14 +60,14 @@ button.secondary {
   background: #f8fafc;
 }
 
-/* GRID (igual spool finder cards) */
+/* GRID */
 .grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 14px;
 }
 
-/* TASK CARD */
+/* CARD */
 .task {
   background: white;
   border-radius: 12px;
@@ -73,11 +76,6 @@ button.secondary {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  transition: 0.15s ease;
-}
-
-.task:hover {
-  transform: translateY(-2px);
 }
 
 .task.done {
@@ -85,23 +83,34 @@ button.secondary {
   text-decoration: line-through;
 }
 
-/* ACTION BUTTONS */
-.task-actions {
+.meta {
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 4px;
+}
+
+.task-left {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ACTIONS */
+.actions {
   display: flex;
   gap: 6px;
 }
 
-.task-actions button {
+.actions button {
   padding: 6px 10px;
   font-size: 12px;
 }
 
-.task-actions button:first-child {
+.actions button:first-child {
   background: #e0f2fe;
   border: none;
 }
 
-.task-actions button:last-child {
+.actions button:last-child {
   background: #fee2e2;
   border: none;
 }
