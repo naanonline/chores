@@ -35,16 +35,22 @@ input, select {
 }
 
 button {
-  padding: 10px 14px;
-  border-radius: 10px;
   border: none;
+  border-radius: 10px;
   cursor: pointer;
+  font-family: inherit;
+  transition: 0.15s ease;
 }
 
 /* 🔥 BOTÓN PRINCIPAL */
 #addBtn {
   background: #111827;
   color: white;
+  padding: 10px 14px;
+}
+
+#addBtn:hover {
+  transform: translateY(-1px);
 }
 
 /* 🔥 BOTÓN SECUNDARIO */
@@ -52,6 +58,11 @@ button {
   background: #f8fafc;
   color: #1f2933;
   border: 1px solid #d0d5dd;
+  padding: 10px 14px;
+}
+
+#sweepBtn:hover {
+  background: #eef2f7;
 }
 
 /* hover suave */
@@ -100,6 +111,13 @@ button {
   overflow: hidden;
 }
 
+.toast button {
+  background: transparent;
+  color: #60a5fa;
+  font-weight: bold;
+  padding: 0;
+}
+
 .toast.hidden {
   display: none;
 }
@@ -117,4 +135,27 @@ button {
   height: 100%;
   width: 100%;
   background: #60a5fa;
+}
+
+/* ACTIONS */
+.actions button {
+  padding: 6px 10px;
+  font-size: 12px;
+  border-radius: 8px;
+}
+
+/* ✔ completar */
+.actions button:first-child {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+/* ✕ eliminar */
+.actions button:last-child {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.actions button:hover {
+  transform: scale(1.05);
 }
