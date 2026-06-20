@@ -224,8 +224,11 @@ function toggleTask(index) {
   };
 
   tasks.splice(index, 1);
-
   render();
+
+  /* =========================
+     1. TOAST PRINCIPAL
+  ========================= */
 
   showToast("Task completada", () => {
     tasks.splice(undoStack.index, 0, undoStack.task);
@@ -233,28 +236,35 @@ function toggleTask(index) {
   });
 
   /* =========================
-     SMART SUGGESTION (NO AUTO CREATE)
+     2. SUGERENCIA (DELAY MÁS GRANDE Y SEPARADA)
   ========================= */
 
   const next = task.repeat !== "none" ? getNextDate(task) : null;
 
   if (next) {
     setTimeout(() => {
-      showToast(
-        `¿Agregar siguiente? ${next.toISOString().split("T")[0]}`,
-        () => {
-          tasks.push({
-            id: crypto.randomUUID(),
-            text: task.text,
-            date: next.toISOString().split("T")[0],
-            repeat: task.repeat,
-            done: false
-          });
 
-          render();
-        }
-      );
-    }, 600);
+      // 🔥 evita conflicto con toast anterior
+      toast.classList.add("hidden");
+
+      setTimeout(() => {
+        showToast(
+          `Siguiente sugerida: ${next.toISOString().split("T")[0]}`,
+          () => {
+            tasks.push({
+              id: crypto.randomUUID(),
+              text: task.text,
+              date: next.toISOString().split("T")[0],
+              repeat: task.repeat,
+              done: false
+            });
+
+            render();
+          }
+        );
+      }, 200);
+
+    }, 1200); // 🔥 IMPORTANTE: más tarde
   }
 }
 
