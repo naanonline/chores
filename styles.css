@@ -104,6 +104,16 @@ button.secondary {
   border-radius: 8px;
   border: 1px solid #d0d5dd;
   font-size: 14px;
+  outline: none;
+  background: #fff;
+}
+
+.task {
+  transition: 0.15s ease;
+}
+
+.task:hover {
+  transform: translateY(-1px);
 }
 
 /* ACTIONS */
