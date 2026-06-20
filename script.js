@@ -86,11 +86,11 @@ function showToast({ message, onUndo, actions = [] }) {
     <span>${message}</span>
 
     <div class="toast-actions">
-      ${onUndo ? `<button id="undoBtn">Undo</button>` : ""}
-      ${actions.map((a, i) =>
-        `<button data-action="${i}">${a.label}</button>`
-      ).join("")}
-    </div>
+     ${onUndo ? `<button class="toast-link" id="undoBtn">Undo</button>` : ""}
+     ${actions.map((a, i) =>
+       `<button class="toast-pill" data-action="${i}">${a.label}</button>`
+     ).join("")}
+   </div>
 
     <div class="toast-bar">
       <div class="toast-bar-fill"></div>
