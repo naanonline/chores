@@ -165,10 +165,12 @@ function render() {
 
     const done = document.createElement("button");
     done.textContent = "✔";
+    done.className = "btn-done";
     done.onclick = () => toggleTask(index);
 
     const del = document.createElement("button");
     del.textContent = "✕";
+    del.className = "btn-delete";
     del.onclick = () => deleteTask(index);
 
     actions.appendChild(done);
