@@ -108,16 +108,18 @@ button {
   transform: translateX(-50%);
   background: #111827;
   color: white;
-  padding: 10px 12px;
-  border-radius: 10px;
+  padding: 12px 16px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 14px;
   width: fit-content;   /* 🔥 clave */
-  max-width: 320px;
+  max-width: 340px;
   box-sizing: border-box;
   box-shadow: 0 10px 25px rgba(0,0,0,0.18);
+  position: fixed;
+  overflow: hidden;
 }
 
 .toast.hidden {
@@ -125,10 +127,11 @@ button {
 }
 
 .toast span {
+  flex: 1;
+  padding-right: 6px; /* 🔥 aire interno */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  flex: 1; /* 🔥 clave */
 }
 
 .toast button {
@@ -143,17 +146,22 @@ button {
 
 .toast-bar {
   position: absolute;
-  bottom: 0;
   left: 0;
+  bottom: 0;
   height: 3px;
   width: 100%;
   background: rgba(255,255,255,0.15);
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  overflow: hidden;
+  backdrop-filter: blur(6px);
 }
 
 .toast-bar-fill {
   height: 100%;
   width: 100%;
   background: #60a5fa;
+  border-bottom-left-radius: 12px;
 }
 
 /* ACTIONS */
