@@ -28,9 +28,32 @@ function showToast(message, onUndo) {
   toast.classList.remove("hidden");
 
   toast.innerHTML = `
-    ${message}
+    <span>${message}</span>
     <button id="undoBtn">Undo</button>
+
+    <div class="toast-bar">
+      <div class="toast-bar-fill"></div>
+    </div>
   `;
+
+  const bar = toast.querySelector(".toast-bar-fill");
+
+  let duration = 4000;
+  let start = Date.now();
+
+  /* 🔥 animación smooth con requestAnimationFrame */
+  function animate() {
+    let elapsed = Date.now() - start;
+    let progress = Math.max(0, 1 - elapsed / duration);
+
+    bar.style.width = (progress * 100) + "%";
+
+    if (progress > 0) {
+      requestAnimationFrame(animate);
+    }
+  }
+
+  requestAnimationFrame(animate);
 
   document.getElementById("undoBtn").onclick = () => {
     clearTimeout(undoTimer);
@@ -45,9 +68,8 @@ function showToast(message, onUndo) {
   undoTimer = setTimeout(() => {
     toast.classList.add("hidden");
     undoStack = null;
-  }, 4000);
+  }, duration);
 }
-
 /* =========================
    ADD TASK
 ========================= */
