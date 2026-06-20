@@ -1,36 +1,54 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <title>Home Tasks</title>
+  <meta charset="UTF-8">
+  <title>Task Sweeper</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<h1>🏠 Home Tasks</h1>
+<header class="header">
+  <h1>🧹 Task Sweeper</h1>
 
-<div class="card">
-  <h3>Nueva tarea</h3>
+  <div class="filters">
+    <button onclick="setFilter('all')">Todas</button>
+    <button onclick="setFilter('home')">Casa</button>
+    <button onclick="setFilter('pets')">Perros</button>
+    <button onclick="setFilter('finance')">Finanzas</button>
+  </div>
+</header>
 
-  <input id="name" placeholder="Ej. Lavar ropa" />
+<section class="dashboard">
+  <div class="stat red" id="overdue">0 Vencidas</div>
+  <div class="stat yellow" id="today">0 Hoy</div>
+  <div class="stat green" id="upcoming">0 Próximas</div>
+</section>
+
+<section class="create-card">
+  <input id="name" placeholder="Nueva tarea (ej. Lavar ropa)">
+  
+  <select id="category">
+    <option value="home">Casa</option>
+    <option value="pets">Perros</option>
+    <option value="finance">Finanzas</option>
+  </select>
 
   <select id="type">
     <option value="days">Cada X días</option>
-    <option value="monthDay">Día del mes</option>
-    <option value="weekday">Día de la semana</option>
+    <option value="month">Día del mes</option>
   </select>
 
-  <input id="value" placeholder="Ej. 14 / 15 / 6 (sábado)" />
-
-  <label>
-    <input type="checkbox" id="weekendFix" />
-    Mover a fin de semana si cae entre semana
-  </label>
+  <input id="value" placeholder="Ej. 14 o 15">
 
   <button onclick="addTask()">Agregar</button>
-</div>
+</section>
 
-<div id="list"></div>
+<main id="list" class="grid"></main>
+
+<section class="calendar-wrapper">
+  <h2>📅 Calendario</h2>
+  <div id="calendar" class="calendar"></div>
+</section>
 
 <script src="app.js"></script>
 </body>
