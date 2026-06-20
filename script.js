@@ -154,14 +154,17 @@ function addTask() {
   const text = input.value.trim();
    let date = dateInput.value;
    
-   const today = new Date().toISOString().split("T")[0];
+   dateInput.addEventListener("change", () => {
+     const today = new Date().toISOString().split("T")[0];
    
-   if (date < today) {
-     date = today;
-     showToast({
-       message: "Se me hace que quieres hacerlo hoy..."
-     });
-   }
+     if (dateInput.value < today) {
+       dateInput.value = today;
+   
+       showToast({
+         message: "Se me hace que quieres hacerlo hoy..."
+       });
+     }
+   });
 
   if (!text || !date) return;
 
