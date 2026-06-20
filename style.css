@@ -1,0 +1,46 @@
+body {
+  font-family: Arial;
+  background: #111;
+  color: #eee;
+  margin: 0;
+  padding: 20px;
+}
+
+h1 {
+  margin-bottom: 15px;
+}
+
+.card {
+  background: #1c1c1c;
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: 10px;
+}
+
+input, select, button {
+  padding: 8px;
+  margin: 5px 0;
+  border-radius: 6px;
+  border: none;
+  width: 100%;
+}
+
+button {
+  background: #4caf50;
+  color: white;
+  cursor: pointer;
+}
+
+button.delete {
+  background: #e74c3c;
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+}
+
+.small {
+  font-size: 12px;
+  opacity: 0.7;
+}
