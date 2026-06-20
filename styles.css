@@ -150,7 +150,20 @@ button {
   border-radius: 8px;
 }
 
-.actions button:first-child {
+.btn-done {
   background: #e0f2fe;
   color: #0369a1;
+}
+
+.btn-done:hover {
+  transform: scale(1.08);
+}
+
+.btn-delete {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.btn-delete:hover {
+  transform: scale(1.08);
 }
