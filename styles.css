@@ -116,6 +116,35 @@ button.secondary {
   transform: translateY(-1px);
 }
 
+/* TOAST */
+.toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #111827;
+  color: white;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+.toast.hidden {
+  display: none;
+}
+
+.toast button {
+  background: transparent;
+  border: none;
+  color: #60a5fa;
+  cursor: pointer;
+  font-weight: bold;
+}
+
 /* ACTIONS */
 .actions {
   display: flex;
