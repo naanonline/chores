@@ -68,6 +68,41 @@ function getNextDate(task) {
 }
 
 /* =========================
+   INLINE EDIT
+========================= */
+
+function enableInlineEdit() {
+  document.querySelectorAll(".task-text").forEach(el => {
+    el.addEventListener("click", (e) => {
+      const index = e.target.dataset.index;
+      const oldValue = tasks[index].text;
+
+      const input = document.createElement("input");
+      input.className = "task-edit";
+      input.value = oldValue;
+
+      e.target.replaceWith(input);
+      input.focus();
+
+      const save = () => {
+        const newValue = input.value.trim();
+        if (newValue) {
+          tasks[index].text = newValue;
+        }
+        render();
+      };
+
+      input.addEventListener("blur", save);
+
+      input.addEventListener("keydown", (ev) => {
+        if (ev.key === "Enter") save();
+        if (ev.key === "Escape") render();
+      });
+    });
+  });
+}
+
+/* =========================
    RENDER
 ========================= */
 
@@ -80,11 +115,16 @@ function render() {
 
     card.innerHTML = `
       <div class="task-left">
-        <strong>${task.text}</strong>
+        
+        <strong class="task-text" data-index="${index}">
+          ${task.text}
+        </strong>
+
         <span class="meta">
           📅 ${task.date} 
           ${task.repeat !== "none" ? ` | 🔁 ${task.repeat}` : ""}
         </span>
+
       </div>
 
       <div class="actions">
@@ -95,6 +135,8 @@ function render() {
 
     taskList.appendChild(card);
   });
+
+  enableInlineEdit();
 }
 
 /* =========================
