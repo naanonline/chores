@@ -150,7 +150,7 @@ button {
   bottom: 0;
   height: 3px;
   width: 100%;
-  background: rgba(255,255,255,0.15);
+  background: rgba(0, 0, 0, 0.25);
   border-bottom-left-radius: 12px;
   border-bottom-right-radius: 12px;
   overflow: hidden;
