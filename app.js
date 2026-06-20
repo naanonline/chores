@@ -1,161 +1,64 @@
-let tasks = JSON.parse(localStorage.getItem("tasks") || "[]");
-let filter = "all";
+const input = document.getElementById("taskInput");
+const addBtn = document.getElementById("addBtn");
+const sweepBtn = document.getElementById("sweepBtn");
+const taskList = document.getElementById("taskList");
 
-function save() {
-  localStorage.setItem("tasks", JSON.stringify(tasks));
-}
+let tasks = [];
 
-function calculateNext(task, from) {
-  let date = new Date(from);
+function render() {
+  taskList.innerHTML = "";
 
-  if (task.type === "days") {
-    date.setDate(date.getDate() + parseInt(task.value));
-  }
+  tasks.forEach((task, index) => {
+    const div = document.createElement("div");
+    div.className = "task" + (task.done ? " done" : "");
 
-  if (task.type === "month") {
-    const d = parseInt(task.value);
-    date.setMonth(date.getMonth() + 1);
-    date.setDate(d);
-  }
+    div.innerHTML = `
+      <span>${task.text}</span>
+      <div>
+        <button onclick="toggleTask(${index})">✔</button>
+        <button onclick="deleteTask(${index})">✕</button>
+      </div>
+    `;
 
-  return date;
+    taskList.appendChild(div);
+  });
 }
 
 function addTask() {
-  const name = document.getElementById("name").value;
-  const category = document.getElementById("category").value;
-  const type = document.getElementById("type").value;
-  const value = document.getElementById("value").value;
+  const text = input.value.trim();
+  if (!text) return;
 
-  if (!name || !value) return;
-
-  const now = new Date();
-
-  tasks.push({
-    id: Date.now(),
-    name,
-    category,
-    type,
-    value,
-    lastDone: now,
-    next: calculateNext({ type, value }, now)
-  });
-
-  save();
+  tasks.push({ text, done: false });
+  input.value = "";
   render();
 }
 
-function markDone(id) {
-  tasks = tasks.map(t => {
-    if (t.id === id) {
-      const now = new Date();
-      return {
-        ...t,
-        lastDone: now,
-        next: calculateNext(t, now)
-      };
-    }
-    return t;
-  });
-
-  save();
+function toggleTask(index) {
+  tasks[index].done = !tasks[index].done;
   render();
 }
 
-function setFilter(f) {
-  filter = f;
+function deleteTask(index) {
+  tasks.splice(index, 1);
   render();
 }
 
-function getStatus(task) {
-  const now = new Date();
-  const diff = new Date(task.next) - now;
-
-  if (diff < 0) return "red";
-  if (diff < 86400000) return "yellow";
-  return "green";
+// 🧹 Sweep = borrar completadas
+function sweepTasks() {
+  tasks = tasks.filter(t => !t.done);
+  render();
 }
 
-/* DASHBOARD */
-function renderDashboard() {
-  const now = new Date();
-  let o=0, t=0, u=0;
+addBtn.addEventListener("click", addTask);
 
-  tasks.forEach(task => {
-    const diff = new Date(task.next) - now;
-    if (diff < 0) o++;
-    else if (diff < 86400000) t++;
-    else u++;
-  });
+input.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") addTask();
+});
 
-  document.getElementById("overdue").innerText = o + " Vencidas";
-  document.getElementById("today").innerText = t + " Hoy";
-  document.getElementById("upcoming").innerText = u + " Próximas";
-}
+sweepBtn.addEventListener("click", sweepTasks);
 
-/* LIST */
-function renderList() {
-  const list = document.getElementById("list");
-  list.innerHTML = "";
-
-  tasks
-    .filter(t => filter === "all" || t.category === filter)
-    .sort((a,b) => new Date(a.next) - new Date(b.next))
-    .forEach(t => {
-      const status = getStatus(t);
-
-      const div = document.createElement("div");
-      div.className = "task " + status;
-
-      div.innerHTML = `
-        <b>${t.name}</b><br>
-        <small>${t.category}</small><br>
-        <small>📅 ${new Date(t.next).toLocaleDateString()}</small><br>
-        <button onclick="markDone(${t.id})">Hecho</button>
-      `;
-
-      list.appendChild(div);
-    });
-}
-
-/* CALENDAR */
-function renderCalendar() {
-  const cal = document.getElementById("calendar");
-  if (!cal) return;
-
-  const now = new Date();
-  const y = now.getFullYear();
-  const m = now.getMonth();
-
-  const first = new Date(y,m,1);
-  const last = new Date(y,m+1,0);
-
-  cal.innerHTML = "";
-
-  for (let i=0;i<first.getDay();i++) {
-    cal.innerHTML += `<div class="day"></div>`;
-  }
-
-  for (let d=1; d<=last.getDate(); d++) {
-    const date = new Date(y,m,d).toDateString();
-
-    const dayTasks = tasks.filter(t =>
-      new Date(t.next).toDateString() === date
-    );
-
-    cal.innerHTML += `
-      <div class="day">
-        <b>${d}</b><br>
-        ${dayTasks.map(t => "• " + t.name).join("<br>")}
-      </div>
-    `;
-  }
-}
-
-function render() {
-  renderDashboard();
-  renderList();
-  renderCalendar();
-}
+// Exponer funciones para botones inline
+window.toggleTask = toggleTask;
+window.deleteTask = deleteTask;
 
 render();
