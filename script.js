@@ -1,146 +1,18 @@
+document.addEventListener("DOMContentLoaded", () => {
+
+const taskList = document.getElementById("taskList");
+
 const input = document.getElementById("taskInput");
 const dateInput = document.getElementById("dateInput");
 const repeatType = document.getElementById("repeatType");
 
 const addBtn = document.getElementById("addBtn");
 const sweepBtn = document.getElementById("sweepBtn");
-const taskList = document.getElementById("taskList");
 
 let tasks = [];
 
 /* =========================
-   HELPERS DE FECHAS
-========================= */
-
-function formatDate(d) {
-  return d.toISOString().split("T")[0];
-}
-
-function addDays(date, days) {
-  const d = new Date(date);
-  d.setDate(d.getDate() + days);
-  return d;
-}
-
-/* 🔥 snap a fin de semana */
-function snapWeekend(date) {
-  const d = new Date(date);
-  const day = d.getDay(); // 0 dom, 6 sáb
-
-  if (day === 4) { // jueves -> viernes
-    d.setDate(d.getDate() + 1);
-  }
-  if (day === 5) { // viernes -> sábado
-    d.setDate(d.getDate() + 1);
-  }
-
-  return d;
-}
-
-/* =========================
-   NEXT DATE LOGIC
-========================= */
-
-function getNextDate(task) {
-  const base = new Date(task.date);
-
-  let next;
-
-  switch (task.repeat) {
-    case "days14":
-      next = addDays(base, 14);
-      break;
-
-    case "weekly":
-      next = addDays(base, 7);
-      break;
-
-    case "monthly":
-      next = new Date(base);
-      next.setMonth(next.getMonth() + 1);
-      break;
-
-    default:
-      return null;
-  }
-
-  return snapWeekend(next);
-}
-
-/* =========================
-   INLINE EDIT
-========================= */
-
-function enableInlineEdit() {
-  document.querySelectorAll(".task-text").forEach(el => {
-    el.addEventListener("click", (e) => {
-      const index = e.target.dataset.index;
-      const oldValue = tasks[index].text;
-
-      const input = document.createElement("input");
-      input.className = "task-edit";
-      input.value = oldValue;
-
-      e.target.replaceWith(input);
-      input.focus();
-
-      const save = () => {
-        const newValue = input.value.trim();
-        if (newValue) {
-          tasks[index].text = newValue;
-        }
-        render();
-      };
-
-      input.addEventListener("blur", save);
-
-      input.addEventListener("keydown", (ev) => {
-        if (ev.key === "Enter") save();
-        if (ev.key === "Escape") render();
-      });
-    });
-  });
-}
-
-/* =========================
-   RENDER
-========================= */
-
-function render() {
-  taskList.innerHTML = "";
-
-  tasks.forEach((task, index) => {
-    const card = document.createElement("div");
-    card.className = "task" + (task.done ? " done" : "");
-
-    card.innerHTML = `
-      <div class="task-left">
-        
-        <strong class="task-text" data-index="${index}">
-          ${task.text}
-        </strong>
-
-        <span class="meta">
-          📅 ${task.date} 
-          ${task.repeat !== "none" ? ` | 🔁 ${task.repeat}` : ""}
-        </span>
-
-      </div>
-
-      <div class="actions">
-        <button onclick="toggleTask(${index})">✔</button>
-        <button onclick="deleteTask(${index})">✕</button>
-      </div>
-    `;
-
-    taskList.appendChild(card);
-  });
-
-  enableInlineEdit();
-}
-
-/* =========================
-   ACTIONS
+   ADD TASK
 ========================= */
 
 function addTask() {
@@ -163,24 +35,102 @@ function addTask() {
   render();
 }
 
-function toggleTask(index) {
-  const task = tasks[index];
-  task.done = !task.done;
+/* =========================
+   RENDER (NO FULL DOM BREAKING)
+========================= */
 
-  /* 🔥 si se completa y tiene repetición → reprograma */
-  if (task.done && task.repeat !== "none") {
-    const next = getNextDate(task);
+function render() {
+  taskList.innerHTML = "";
 
-    if (next) {
-      tasks.push({
-        text: task.text,
-        date: formatDate(next),
-        repeat: task.repeat,
-        done: false
-      });
+  tasks.forEach((task, index) => {
+    taskList.appendChild(createTask(task, index));
+  });
+}
+
+/* =========================
+   CREATE TASK NODE
+========================= */
+
+function createTask(task, index) {
+  const card = document.createElement("div");
+  card.className = "task" + (task.done ? " done" : "");
+
+  const left = document.createElement("div");
+  left.className = "task-left";
+
+  const text = document.createElement("strong");
+  text.className = "task-text";
+  text.textContent = task.text;
+
+  const meta = document.createElement("span");
+  meta.className = "meta";
+  meta.textContent = `📅 ${task.date} ${task.repeat !== "none" ? "| 🔁 " + task.repeat : ""}`;
+
+  left.appendChild(text);
+  left.appendChild(meta);
+
+  const actions = document.createElement("div");
+  actions.className = "actions";
+
+  const doneBtn = document.createElement("button");
+  doneBtn.textContent = "✔";
+  doneBtn.onclick = () => toggleTask(index);
+
+  const delBtn = document.createElement("button");
+  delBtn.textContent = "✕";
+  delBtn.onclick = () => deleteTask(index);
+
+  actions.appendChild(doneBtn);
+  actions.appendChild(delBtn);
+
+  card.appendChild(left);
+  card.appendChild(actions);
+
+  /* INLINE EDIT */
+  text.addEventListener("click", () => enableEdit(text, task, index));
+
+  return card;
+}
+
+/* =========================
+   INLINE EDIT (NOTION STYLE)
+========================= */
+
+function enableEdit(textEl, task, index) {
+  const input = document.createElement("input");
+  input.className = "task-edit";
+  input.value = task.text;
+
+  textEl.replaceWith(input);
+  input.focus();
+
+  const save = () => {
+    const value = input.value.trim();
+
+    if (value) {
+      tasks[index].text = value;
     }
-  }
 
+    render();
+  };
+
+  input.addEventListener("blur", save);
+
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") save();
+
+    if (e.key === "Escape") {
+      render();
+    }
+  });
+}
+
+/* =========================
+   ACTIONS
+========================= */
+
+function toggleTask(index) {
+  tasks[index].done = !tasks[index].done;
   render();
 }
 
@@ -189,7 +139,6 @@ function deleteTask(index) {
   render();
 }
 
-/* 🧹 sweep */
 function sweepTasks() {
   tasks = tasks.filter(t => !t.done);
   render();
@@ -206,9 +155,11 @@ input.addEventListener("keydown", (e) => {
   if (e.key === "Enter") addTask();
 });
 
-/* expose */
+/* expose (por seguridad con botones futuros) */
 window.toggleTask = toggleTask;
 window.deleteTask = deleteTask;
 
-/* init */
+/* INIT */
 render();
+
+});
