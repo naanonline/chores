@@ -9,18 +9,18 @@ function render() {
   taskList.innerHTML = "";
 
   tasks.forEach((task, index) => {
-    const div = document.createElement("div");
-    div.className = "task" + (task.done ? " done" : "");
+    const card = document.createElement("div");
+    card.className = "task" + (task.done ? " done" : "");
 
-    div.innerHTML = `
+    card.innerHTML = `
       <span>${task.text}</span>
-      <div>
+      <div class="task-actions">
         <button onclick="toggleTask(${index})">✔</button>
         <button onclick="deleteTask(${index})">✕</button>
       </div>
     `;
 
-    taskList.appendChild(div);
+    taskList.appendChild(card);
   });
 }
 
@@ -43,21 +43,18 @@ function deleteTask(index) {
   render();
 }
 
-// 🧹 Sweep = borrar completadas
 function sweepTasks() {
   tasks = tasks.filter(t => !t.done);
   render();
 }
 
 addBtn.addEventListener("click", addTask);
+sweepBtn.addEventListener("click", sweepTasks);
 
 input.addEventListener("keydown", (e) => {
   if (e.key === "Enter") addTask();
 });
 
-sweepBtn.addEventListener("click", sweepTasks);
-
-// Exponer funciones para botones inline
 window.toggleTask = toggleTask;
 window.deleteTask = deleteTask;
 
