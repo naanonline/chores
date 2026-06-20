@@ -35,11 +35,11 @@ input, select {
 }
 
 button {
-  border: none;
+  font-family: inherit;
   border-radius: 10px;
   cursor: pointer;
-  font-family: inherit;
   transition: 0.15s ease;
+  border: none;
 }
 
 /* 🔥 BOTÓN PRINCIPAL */
@@ -61,11 +61,6 @@ button {
   padding: 10px 14px;
 }
 
-#sweepBtn:hover {
-  background: #eef2f7;
-}
-
-/* hover suave */
 #sweepBtn:hover {
   background: #eef2f7;
 }
@@ -111,15 +106,16 @@ button {
   overflow: hidden;
 }
 
+.toast.hidden {
+  display: none;
+}
+
 .toast button {
   background: transparent;
   color: #60a5fa;
   font-weight: bold;
   padding: 0;
-}
-
-.toast.hidden {
-  display: none;
+  border: none;
 }
 
 .toast-bar {
@@ -138,24 +134,23 @@ button {
 }
 
 /* ACTIONS */
+.actions {
+  display: flex;
+  gap: 6px;
+}
+
 .actions button {
-  padding: 6px 10px;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 12px;
   border-radius: 8px;
 }
 
-/* ✔ completar */
 .actions button:first-child {
   background: #e0f2fe;
   color: #0369a1;
-}
-
-/* ✕ eliminar */
-.actions button:last-child {
-  background: #fee2e2;
-  color: #b91c1c;
-}
-
-.actions button:hover {
-  transform: scale(1.05);
 }
