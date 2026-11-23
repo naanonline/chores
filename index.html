@@ -1,47 +1,43 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Task Sweeper</title>
-  <link rel="stylesheet" href="styles.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#E9EBED">
+<title>Casa al día</title>
+<link rel="stylesheet" href="style.css">
 </head>
-
 <body>
+<main>
+<div class="top"><h1>Casa al día</h1><button class="add" id="ad" aria-label="Nueva tarea" aria-expanded="false">+</button></div>
 
-<div class="page">
+<form id="f">
+ <div class="card">
+  <div class="f"><label for="n">Tarea</label><input type="text" id="n" required maxlength="60" placeholder="Cortar el césped"></div>
+  <div class="f"><label for="d">Primera vez</label><input type="date" id="d" required></div>
+  <div class="f"><label for="u">Se repite</label>
+   <select id="u"><option value="none">Nunca</option><option value="days">Cada X días</option><option value="weeks" selected>Cada X semanas</option><option value="months">Cada X meses</option></select></div>
+  <div class="f" id="iw"><label for="i">Cada cuánto (X)</label><input type="number" id="i" min="1" max="52" value="2"></div>
+ </div>
+ <p class="hint" id="h"></p>
+ <button class="save" type="submit">Agregar tarea</button>
+</form>
 
-  <header class="header">
-    <h1>Task Sweeper</h1>
-    <p class="sub">Remind yourself. Easily.</p>
-  </header>
-
-  <section class="input-bar">
-
-    <input id="taskInput" placeholder="Tarea..." />
-
-    <input id="dateInput" type="date" />
-
-    <select id="repeatType">
-      <option value="none">Sin repetición</option>
-      <option value="14days">Cada 14 días</option>
-      <option value="weekly">Semanal</option>
-      <option value="monthly">Mensual</option>
-    </select>
-
-    <button id="addBtn">Agregar</button>
-    <button id="sweepBtn" class="secondary">Sweep</button>
-
-  </section>
-
-  <section id="taskList" class="grid"></section>
-
+<div class="seg" role="group" aria-label="Vista">
+ <button type="button" id="vl" aria-pressed="true">Próximos días</button>
+ <button type="button" id="vc" aria-pressed="false">Calendario</button>
 </div>
 
-<!-- 🔥 TOAST -->
-<div id="toast" class="toast hidden"></div>
+<section id="list"></section>
+<section id="cal" hidden>
+ <div class="bar"><h2 id="mt"></h2><div class="nav"><button id="pv" aria-label="Mes anterior">‹</button><button id="td">Hoy</button><button id="nx" aria-label="Mes siguiente">›</button></div></div>
+ <div class="grid" id="g"></div>
+</section>
 
-<script src="script.js" defer></script>
+<div class="sec">Mis tareas</div>
+<div class="card" id="ls"></div>
+</main>
 
+<script src="script.js"></script>
 </body>
 </html>
