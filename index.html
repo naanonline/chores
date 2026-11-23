@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#E9EBED">
-<title>Casa al día</title>
+<title>Task Sweeper</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <main>
-<div class="top"><h1>Casa al día</h1><button class="add" id="ad" aria-label="Nueva tarea" aria-expanded="false">+</button></div>
+<div class="top"><h1>Task Sweeper</h1><button class="add" id="ad" aria-label="Nueva tarea" aria-expanded="false">+</button></div>
 
 <form id="f">
  <div class="card">
@@ -17,7 +17,7 @@
   <div class="f"><label for="d">Primera vez</label><input type="date" id="d" required></div>
   <div class="f"><label for="u">Se repite</label>
    <select id="u"><option value="none">Nunca</option><option value="days">Cada X días</option><option value="weeks" selected>Cada X semanas</option><option value="months">Cada X meses</option></select></div>
-  <div class="f" id="iw"><label for="i">Cada cuánto (X)</label><input type="number" id="i" min="1" max="52" value="2"></div>
+  <div class="f" id="iw"><label for="i">Cada (X)</label><input type="number" id="i" min="1" max="52" value="2"></div>
  </div>
  <p class="hint" id="h"></p>
  <button class="save" type="submit">Agregar tarea</button>
