@@ -2,6 +2,39 @@
 var KEY="casa-al-dia-v1",S={tasks:[],done:{},view:"list"},view=new Date();view.setDate(1);
 try{var r=localStorage.getItem(KEY);if(r){var p=JSON.parse(r);if(p&&p.tasks){S=p;S.done=S.done||{}}}}catch(e){}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+/* ===== SINCRONIZACIÓN (Firebase Firestore) =====
+   Pega aquí los datos de tu proyecto de Firebase. Si los dejas vacíos,
+   la app funciona igual pero guarda solo en este dispositivo. */
+var FB={apiKey:"AIzaSyAdLJl5YtsvfutYJlZNeXsAdo_hl6ngOPM",projectId:"tasksweeper-a9a5f"};
+var pt;
+function saveData(){S.ts=Date.now();save();clearTimeout(pt);pt=setTimeout(push,600)}
+function canSync(){return !!(FB.apiKey&&FB.projectId&&S.code&&S.code.length>=8)}
+function furl(){return "https://firestore.googleapis.com/v1/projects/"+FB.projectId+"/databases/(default)/documents/casa/"+encodeURIComponent(S.code)+"?key="+FB.apiKey}
+function syStatus(t){var e=document.getElementById("sy");if(e)e.textContent=t}
+function hora(){return new Date().toLocaleTimeString("es-MX",{hour:"2-digit",minute:"2-digit"})}
+async function push(){
+ if(!canSync())return;
+ if(!S.ts){S.ts=Date.now();save()}
+ try{
+  var body={fields:{data:{stringValue:JSON.stringify({tasks:S.tasks,done:S.done})},ts:{integerValue:String(S.ts)}}};
+  var r=await fetch(furl(),{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+  if(!r.ok)throw new Error(r.status);
+  syStatus("Sincronizado a las "+hora());
+ }catch(e){syStatus("No se pudo guardar en la nube. Revisa tu conexión y la configuración.")}
+}
+async function pull(){
+ if(!canSync())return;
+ try{
+  var r=await fetch(furl());
+  if(r.status===404){await push();return}
+  if(!r.ok)throw new Error(r.status);
+  var j=await r.json(),d=JSON.parse(j.fields.data.stringValue),ts=+j.fields.ts.integerValue;
+  if(ts>(S.ts||0)){S.tasks=d.tasks||[];S.done=d.done||{};S.ts=ts;save();render();syStatus("Sincronizado a las "+hora())}
+  else if(ts<(S.ts||0)){await push()}
+  else syStatus("Sincronizado a las "+hora());
+ }catch(e){syStatus("Sin conexión con la nube. Se reintentará solo.")}
+}
+
 var $=function(i){return document.getElementById(i)};
 function iso(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
 function parse(s){var a=s.split("-");return new Date(+a[0],+a[1]-1,+a[2])}
@@ -24,7 +57,7 @@ function desc(t){
 }
 function tasksOn(d){return S.tasks.filter(function(t){return occurs(t,d)})}
 function isDone(t,d){return !!S.done[t.id+"|"+iso(d)]}
-function toggle(t,d){var k=t.id+"|"+iso(d);if(S.done[k])delete S.done[k];else S.done[k]=1;save();render()}
+function toggle(t,d){var k=t.id+"|"+iso(d);if(S.done[k])delete S.done[k];else S.done[k]=1;saveData();render()}
 function el(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e}
 function ck(t){return "var(--c"+t.c+")"}
 function applyTheme(){
@@ -103,7 +136,7 @@ function render(){
    if(!confirm("¿Eliminar "+t.name+"?"))return;
    S.tasks=S.tasks.filter(function(z){return z.id!==t.id});
    Object.keys(S.done).forEach(function(k){if(k.indexOf(t.id+"|")===0)delete S.done[k]});
-   save();render();
+   saveData();render();
   };
   r.appendChild(dot);r.appendChild(w);r.appendChild(b);ls.appendChild(r);
  });
@@ -119,7 +152,7 @@ $("f").onsubmit=function(e){
  e.preventDefault();
  var t={id:"t"+Date.now(),name:$("n").value.trim(),start:$("d").value,unit:$("u").value,n:Math.max(1,+$("i").value||1),c:S.tasks.length%6};
  if(!t.name||!t.start)return;
- S.tasks.push(t);save();$("n").value="";
+ S.tasks.push(t);saveData();$("n").value="";
  view=parse(t.start);view.setDate(1);
  $("f").classList.remove("open");$("ad").setAttribute("aria-expanded","false");$("ad").textContent="+";
  render();
@@ -131,4 +164,18 @@ $("pv").onclick=function(){view.setMonth(view.getMonth()-1);render()};
 $("nx").onclick=function(){view.setMonth(view.getMonth()+1);render()};
 $("td").onclick=function(){view=new Date();view.setDate(1);render()};
 $("d").value=iso(new Date());hint();render();
+if(FB.apiKey&&FB.projectId){
+ $("sw").hidden=false;$("cd").value=S.code||"";
+ syStatus(S.code?"Conectando…":"Escribe un código de al menos 8 caracteres y usa el mismo en todos tus dispositivos.");
+ $("cb").onclick=function(){
+  var c=$("cd").value.trim();
+  if(c.length<8){syStatus("El código necesita al menos 8 caracteres.");return}
+  S.code=c;save();syStatus("Conectando…");pull();
+ };
+ setInterval(pull,20000);
+ document.addEventListener("visibilitychange",function(){if(!document.hidden)pull()});
+ window.addEventListener("focus",pull);
+ pull();
+}
+
 })();
