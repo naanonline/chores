@@ -16,6 +16,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 .card{background:var(--card);border-radius:14px;overflow:hidden}
 .sec{font-size:.8rem;color:var(--mute);margin:20px 0 6px 14px}
 .sec.first{margin-top:12px}
+.sec.warn{color:#FF3B30;font-weight:600}
 .row{display:flex;align-items:center;gap:12px;padding:11px 14px;min-height:48px}
 .row+.row{border-top:1px solid var(--line)}
 .grow{flex:1;min-width:0}
