@@ -41,6 +41,24 @@ function render(){
  $("vl").setAttribute("aria-pressed",isL);$("vc").setAttribute("aria-pressed",!isL);
 
  var L=$("list");L.innerHTML="";var any=false;
+ var od=[];
+ for(var k=30;k>=1;k--){
+  var y=new Date(today);y.setDate(today.getDate()-k);
+  tasksOn(y).forEach(function(t){if(!isDone(t,y))od.push({t:t,d:y,k:k})});
+ }
+ if(od.length){
+  L.appendChild(el("div","sec warn first","Vencidas"));
+  var oc=el("div","card");
+  od.forEach(function(o){
+   var r=el("div","row"),b=el("button","ring","");b.type="button";
+   b.style.setProperty("--k",ck(o.t));b.setAttribute("aria-label","Marcar "+o.t.name+" como hecha");
+   b.onclick=function(){toggle(o.t,o.d)};
+   var w=el("div","grow");w.appendChild(el("span","",o.t.name));
+   w.appendChild(el("small","",(o.k===1?"Ayer":"Hace "+o.k+" días")+" · "+o.d.toLocaleDateString("es-MX",{weekday:"long",day:"numeric",month:"short"})));
+   r.appendChild(b);r.appendChild(w);oc.appendChild(r);
+  });
+  L.appendChild(oc);
+ }
  for(var j=0;j<14;j++){
   let x=new Date(today);x.setDate(today.getDate()+j);var ts=tasksOn(x);
   if(!ts.length)continue;any=true;
@@ -57,7 +75,7 @@ function render(){
   });
   L.appendChild(c);
  }
- if(!any){var e=el("div","card");e.appendChild(el("p","empty",S.tasks.length?"Nada pendiente en los próximos 14 días.":"Toca + para agregar tu primera tarea."));L.appendChild(e)}
+ if(!any&&!od.length){var e=el("div","card");e.appendChild(el("p","empty",S.tasks.length?"Nada pendiente en los próximos 14 días.":"Toca + para agregar tu primera tarea."));L.appendChild(e)}
 
  $("mt").textContent=view.toLocaleDateString("es-MX",{month:"long",year:"numeric"});
  var g=$("g");g.innerHTML="";
